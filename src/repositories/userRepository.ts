@@ -1,18 +1,21 @@
-import pool from "../config/db";
+import cuid from 'cuid';
+
+import pool from '../config/db';
 
 const getUsers = async () => {
-    const { rows } = await pool.query("SELECT * FROM users");
+    const { rows } = await pool.query('SELECT * FROM users');
     return rows;
 };
 
 const createUser = async (
     username: string,
     email: string,
-    password: string
+    password: string,
 ) => {
+    const id = cuid();
     const { rows } = await pool.query(
-        "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING*",
-        [username, email, password]
+        'INSERT INTO users (id, username, email, password) VALUES ($1, $2, $3, $4) RETURNING*',
+        [id, username, email, password],
     );
     return rows;
 };
