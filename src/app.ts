@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes';
 import protectedRoutes from './routes/protectedRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
+import tagRoutes from './routes/tagRoutes';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/auth', userRoutes);
 app.use('/api', protectedRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/tags', tagRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));

@@ -93,6 +93,16 @@ const searchPostsFromDb = async (query: string): Promise<Post[]> => {
     return rows;
 };
 
+const getAuthorIdByPostIdFromDb = async (
+    postId: string,
+): Promise<string | null> => {
+    const { rows } = await pool.query(
+        'SELECT author_id FROM posts WHERE id = $1',
+        [postId],
+    );
+    return rows[0]?.author_id || null;
+};
+
 export {
     createPostInDb,
     getPostsFromDb,
@@ -101,4 +111,5 @@ export {
     updatePostByIdInDb,
     deletePostByIdFromDb,
     searchPostsFromDb,
+    getAuthorIdByPostIdFromDb,
 };

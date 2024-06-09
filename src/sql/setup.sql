@@ -31,3 +31,16 @@ CREATE TABLE comments (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE tags (
+    id VARCHAR(25) PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+)
+
+CREATE TABLE tagged_posts (
+    tag_id VARCHAR(25) REFERENCES tags(id) ON DELETE CASCADE,
+    post_id VARCHAR(25) REFERENCES posts(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, tag_id)
+);
