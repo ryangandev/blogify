@@ -22,17 +22,26 @@ const getUserByEmail = async (email: string): Promise<User> => {
     return rows[0] || null;
 };
 
+const getUserByUsername = async (username: string): Promise<User> => {
+    const { rows } = await pool.query(
+        'SELECT * FROM users WHERE username = $1',
+        [username],
+    );
+    return rows[0] || null;
+};
+
 const createUser = async (
     username: string,
     email: string,
     password: string,
+    role: 'user' | 'admin' = 'user',
 ): Promise<User> => {
     const id = cuid();
     const { rows } = await pool.query(
-        'INSERT INTO users (id, username, email, password) VALUES ($1, $2, $3, $4) RETURNING*',
-        [id, username, email, password],
+        'INSERT INTO users (id, username, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING*',
+        [id, username, email, password, role],
     );
     return rows[0];
 };
 
-export { getUsers, getUserById, getUserByEmail, createUser };
+export { getUsers, getUserById, getUserByEmail, getUserByUsername, createUser };

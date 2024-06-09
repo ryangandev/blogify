@@ -3,7 +3,11 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import { loginSchema, registerSchema } from '../schemas/userSchema';
-import { createUser, getUserByEmail } from '../repositories/userRepository';
+import {
+    createUser,
+    getUserByEmail,
+    getUserByUsername,
+} from '../repositories/userRepository';
 
 const registerUser = async (req: Request, res: Response) => {
     try {
@@ -15,7 +19,7 @@ const registerUser = async (req: Request, res: Response) => {
             });
         }
 
-        const { username, email, password } = result.data;
+        const { username, email, password, role } = result.data;
 
         // Check if user already exists
         const existingUser = await getUserByEmail(email);
@@ -24,11 +28,20 @@ const registerUser = async (req: Request, res: Response) => {
             return res.status(409).json({ message: 'User already exists' });
         }
 
+        // Check if username is available
+        const existingUsername = await getUserByUsername(username);
+
+        if (existingUsername) {
+            return res
+                .status(409)
+                .json({ message: 'Username is already taken' });
+        }
+
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user
-        const newUser = await createUser(username, email, hashedPassword);
+        const newUser = await createUser(username, email, hashedPassword, role);
 
         return res
             .status(201)
@@ -67,7 +80,7 @@ const loginUser = async (req: Request, res: Response) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { userId: existingUser.id },
+            { userId: existingUser.id, role: existingUser.role },
             process.env.JWT_SECRET as string,
             {
                 expiresIn: '1h',
