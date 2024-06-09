@@ -25,7 +25,9 @@ const registerUser = async (req: Request, res: Response) => {
         const existingUser = await getUserByEmail(email);
 
         if (existingUser) {
-            return res.status(409).json({ message: 'User already exists' });
+            return res
+                .status(409)
+                .json({ message: 'User with this email already exists' });
         }
 
         // Check if username is available

@@ -1,4 +1,5 @@
 import Router from 'express';
+
 import { registerUser, loginUser } from '../controllers/userController';
 
 // Setup router middleware

@@ -1,9 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-interface AuthenticatedRequest extends Request {
-    user?: any;
-}
+import { AuthenticatedRequest } from '../models/AuthenticatedRequest';
 
 const authenticateToken = (
     req: AuthenticatedRequest,

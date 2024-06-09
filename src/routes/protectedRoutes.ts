@@ -1,8 +1,8 @@
 import { Response, Router } from 'express';
 
+import { AuthenticatedRequest } from '../models/AuthenticatedRequest';
 import {
     authenticateToken,
-    AuthenticatedRequest,
     authorizeRoles,
 } from '../middleware/authMiddleware';
 

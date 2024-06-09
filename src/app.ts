@@ -7,6 +7,7 @@ import { logger } from './middleware/loggerMiddleware';
 import { errorHandler } from './middleware/errorHandlerMiddleware';
 import userRoutes from './routes/userRoutes';
 import protectedRoutes from './routes/protectedRoutes';
+import postRoutes from './routes/postRoutes';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // Routes
 app.use('/api/auth', userRoutes);
 app.use('/api', protectedRoutes);
+app.use('/api/posts', postRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
