@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 import { loginSchema, registerSchema } from '../schemas/userSchema';
 import {
@@ -8,6 +7,7 @@ import {
     getUserByEmail,
     getUserByUsername,
 } from '../repositories/userRepository';
+import { generateJwtToken } from '../utils/jwt';
 
 const registerUser = async (req: Request, res: Response) => {
     try {
@@ -81,13 +81,10 @@ const loginUser = async (req: Request, res: Response) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign(
-            { userId: existingUser.id, role: existingUser.role },
-            process.env.JWT_SECRET as string,
-            {
-                expiresIn: '1h',
-            },
-        );
+        const token = generateJwtToken({
+            userId: existingUser.id,
+            role: existingUser.role,
+        });
 
         // Set token in cookie
         res.cookie('token', token, {

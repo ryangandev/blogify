@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 
 import { AuthenticatedRequest } from '../models/AuthenticatedRequest';
+import { verifyJwtToken } from '../utils/jwt';
 
 const authenticateToken = (
     req: AuthenticatedRequest,
@@ -21,7 +21,7 @@ const authenticateToken = (
 
     try {
         // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        const decoded = verifyJwtToken(token);
         req.user = decoded; // Attach user object to request
         next(); // Proceed to next middleware or route handler
     } catch (error) {

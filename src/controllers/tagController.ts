@@ -73,7 +73,7 @@ const deleteTag = async (req: Request, res: Response) => {
             message: 'Tag deleted successfully!',
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: 'Internal server error',
         });
     }
@@ -102,7 +102,7 @@ const removeTagFromPost = async (req: Request, res: Response) => {
             message: 'Tag removed from post successfully!',
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: 'Internal server error',
         });
     }
