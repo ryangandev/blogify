@@ -27,7 +27,7 @@ CREATE TABLE comments (
     author_id VARCHAR(25) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     parent_id VARCHAR(25) REFERENCES comments(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    hasChildren BOOLEAN DEFAULT FALSE,
+    has_children BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
