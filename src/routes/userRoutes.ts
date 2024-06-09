@@ -1,14 +1,32 @@
 import Router from 'express';
 
-import { registerUser, loginUser } from '../controllers/userController';
+import {
+    authenticateToken,
+    authorizeRoles,
+} from '../middleware/authMiddleware';
+import {
+    getAllUsers,
+    getCurrentUser,
+    getUserByUsername,
+    getUserByUserId,
+    updateCurrentUserProfile,
+} from '../controllers/userController';
 
-// Setup router middleware
 const router = Router();
 
-// Register a new user
-router.post('/register', registerUser);
+// Get all users
+router.get('/', authenticateToken, authorizeRoles('admin'), getAllUsers);
 
-// Login a user
-router.post('/login', loginUser);
+// Get current user profile
+router.get('/me', authenticateToken, getCurrentUser);
+
+// Get user profile by username
+router.get('/username/:username', authenticateToken, getUserByUsername);
+
+// Get user profile by id
+router.get('/userId/:userId', authenticateToken, getUserByUserId);
+
+// Update user profile
+router.put('/', authenticateToken, updateCurrentUserProfile);
 
 export default router;

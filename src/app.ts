@@ -5,11 +5,12 @@ import path from 'path';
 
 import { logger } from './middleware/loggerMiddleware';
 import { errorHandler } from './middleware/errorHandlerMiddleware';
-import userRoutes from './routes/userRoutes';
+import authRoutes from './routes/authRoutes';
 import protectedRoutes from './routes/protectedRoutes';
 import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 import tagRoutes from './routes/tagRoutes';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 
@@ -24,11 +25,12 @@ app.use(errorHandler); // Handle errors
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Routes
-app.use('/api/auth', userRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api', protectedRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/tags', tagRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));

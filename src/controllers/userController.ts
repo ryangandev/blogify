@@ -1,103 +1,99 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
 
-import { loginSchema, registerSchema } from '../schemas/userSchema';
+import { AuthenticatedRequest } from '../models/AuthenticatedRequest';
+import { userSchema } from '../schemas/userSchema';
 import {
-    createUser,
-    getUserByEmail,
-    getUserByUsername,
+    getUsersFromDb,
+    getUserByIdFromDb,
+    getUserByUsernameFromDb,
+    updateCurrentUserProfileInDb,
 } from '../repositories/userRepository';
-import { generateJwtToken } from '../utils/jwt';
 
-const registerUser = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const result = registerSchema.safeParse(req.body);
-        if (!result.success) {
-            return res.status(400).json({
-                message: 'Invalid username, email or password',
-                errors: result.error.errors,
-            });
-        }
-
-        const { username, email, password, role } = result.data;
-
-        // Check if user already exists
-        const existingUser = await getUserByEmail(email);
-
-        if (existingUser) {
-            return res
-                .status(409)
-                .json({ message: 'User with this email already exists' });
-        }
-
-        // Check if username is available
-        const existingUsername = await getUserByUsername(username);
-
-        if (existingUsername) {
-            return res
-                .status(409)
-                .json({ message: 'Username is already taken' });
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create user
-        const newUser = await createUser(username, email, hashedPassword, role);
-
-        return res
-            .status(201)
-            .json({ message: 'User created successfully!', user: newUser });
+        const users = await getUsersFromDb();
+        return res.status(200).json(users);
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-const loginUser = async (req: Request, res: Response) => {
+const getCurrentUser = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const result = loginSchema.safeParse(req.body);
+        const { userId } = req.user;
+        const user = await getUserByIdFromDb(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const getUserByUsername = async (req: Request, res: Response) => {
+    try {
+        const { username } = req.params;
+        const user = await getUserByUsernameFromDb(username);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const getUserByUserId = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const user = await getUserByIdFromDb(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const updateCurrentUserProfile = async (
+    req: AuthenticatedRequest,
+    res: Response,
+) => {
+    try {
+        const result = userSchema.safeParse(req.body);
         if (!result.success) {
             return res.status(400).json({
-                message: 'Invalid email or password',
+                message: 'Invalid user data',
                 errors: result.error.errors,
             });
         }
 
-        const { email, password } = result.data;
+        const userId = req.user.userId;
+        const { username, email } = result.data;
 
-        // Check if user exists
-        const existingUser = await getUserByEmail(email);
-        if (!existingUser) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
+        // TODO: Check if username and email already exist
 
-        // Check if password matches
-        const isPasswordMatch = await bcrypt.compare(
-            password,
-            existingUser.password,
+        const updatedUser = await updateCurrentUserProfileInDb(
+            userId,
+            username,
+            email,
         );
-        if (!isPasswordMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Generate JWT token
-        const token = generateJwtToken({
-            userId: existingUser.id,
-            role: existingUser.role,
-        });
-
-        // Set token in cookie
-        res.cookie('token', token, {
-            httpOnly: true, // Prevent access to the cookie via JavaScript
-            secure: process.env.NODE_ENV === 'production', // Ensure cookie is only sent over HTTPS
-            sameSite: 'strict', // Ensure cookie is only sent with same-site requests to prevent CSRF
-            maxAge: 3600000, // 1 hour
-        });
-
-        return res.status(200).json({ message: 'Login successful' });
+        return res.status(200).json(updatedUser);
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-export { registerUser, loginUser };
+export {
+    getAllUsers,
+    getCurrentUser,
+    getUserByUsername,
+    getUserByUserId,
+    updateCurrentUserProfile,
+};
