@@ -11,6 +11,7 @@ import postRoutes from './routes/postRoutes';
 import commentRoutes from './routes/commentRoutes';
 import tagRoutes from './routes/tagRoutes';
 import userRoutes from './routes/userRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));

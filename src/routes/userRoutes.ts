@@ -1,11 +1,7 @@
 import Router from 'express';
 
+import { authenticateToken } from '../middleware/authMiddleware';
 import {
-    authenticateToken,
-    authorizeRoles,
-} from '../middleware/authMiddleware';
-import {
-    getAllUsers,
     getCurrentUser,
     getUserByUsername,
     getUserByUserId,
@@ -13,9 +9,6 @@ import {
 } from '../controllers/userController';
 
 const router = Router();
-
-// Get all users
-router.get('/', authenticateToken, authorizeRoles('admin'), getAllUsers);
 
 // Get current user profile
 router.get('/me', authenticateToken, getCurrentUser);

@@ -13,7 +13,7 @@ export const verifyAuthor = async (
         const authorId = await getAuthorIdByPostIdFromDb(postId);
 
         if (!authorId) {
-            return res.status(404).json({ message: 'Post not found' });
+            return res.status(404).json({ message: 'You are not the author' });
         }
 
         if (authorId !== req.user.userId) {

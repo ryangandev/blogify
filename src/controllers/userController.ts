@@ -3,20 +3,10 @@ import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../models/AuthenticatedRequest';
 import { userSchema } from '../schemas/userSchema';
 import {
-    getUsersFromDb,
     getUserByIdFromDb,
     getUserByUsernameFromDb,
     updateCurrentUserProfileInDb,
 } from '../repositories/userRepository';
-
-const getAllUsers = async (req: Request, res: Response) => {
-    try {
-        const users = await getUsersFromDb();
-        return res.status(200).json(users);
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-};
 
 const getCurrentUser = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -91,7 +81,6 @@ const updateCurrentUserProfile = async (
 };
 
 export {
-    getAllUsers,
     getCurrentUser,
     getUserByUsername,
     getUserByUserId,

@@ -27,11 +27,6 @@ const verifyUserExistsByEmail = async (email: string): Promise<boolean> => {
     return rows.length > 0;
 };
 
-const getUsersFromDb = async (): Promise<User[]> => {
-    const { rows } = await pool.query('SELECT * FROM users');
-    return rows;
-};
-
 const getUserByIdFromDb = async (id: string): Promise<User | null> => {
     const { rows } = await pool.query('SELECT * FROM users WHERE id = $1', [
         id,
@@ -86,7 +81,6 @@ export {
     verifyUserExistsById,
     verifyUserExistsByUsername,
     verifyUserExistsByEmail,
-    getUsersFromDb,
     getUserByIdFromDb,
     getUserByEmailFromDb,
     getUserByUsernameFromDb,
