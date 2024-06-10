@@ -13,6 +13,15 @@ Blogify is a simple RESTful blog platform API.
 -   User Profile Management
 -   Admin Dashboard
 
+## ⚙️ Technologies Used
+
+-   Node.js
+-   Express.js
+-   TypeScript
+-   PostgreSQL
+-   JWT for authentication
+-   Jest for testing
+
 ## 🛠️ Installation
 
 1. Clone the repository:
