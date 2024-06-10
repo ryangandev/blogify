@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS tagged_posts;
+DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS users;
@@ -37,7 +39,7 @@ CREATE TABLE tags (
     name VARCHAR(255) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
-)
+);
 
 CREATE TABLE tagged_posts (
     tag_id VARCHAR(25) REFERENCES tags(id) ON DELETE CASCADE,
