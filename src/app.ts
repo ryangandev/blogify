@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
 import { logger } from './middleware/loggerMiddleware';
 import { errorHandler } from './middleware/errorHandlerMiddleware';
@@ -31,6 +32,7 @@ app.use(cookieParser()); // Parse cookies
 app.use(logger); // Log requests
 app.use(errorHandler); // Handle errors
 app.use(limiter); // Rate limit requests
+app.use(helmet()); // Set security headers
 
 // Serve static files from the public folder
 app.use(express.static(path.join(__dirname, '..', 'public')));
